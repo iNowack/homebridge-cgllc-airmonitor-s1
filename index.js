@@ -35,10 +35,10 @@ function ClearGrassAirMonitor(log, config) {
     this.aqi = Characteristic.AirQuality.UNKNOWN;
 
     this.pm25Levels = [
-        [150, Characteristic.AirQuality.POOR],
-        [115, Characteristic.AirQuality.INFERIOR],
-        [75, Characteristic.AirQuality.FAIR],
-        [35, Characteristic.AirQuality.GOOD],
+        [250, Characteristic.AirQuality.POOR],
+        [150, Characteristic.AirQuality.INFERIOR],
+        [55, Characteristic.AirQuality.FAIR],
+        [12, Characteristic.AirQuality.GOOD],
         [0, Characteristic.AirQuality.EXCELLENT],
     ];
     this.tvocLevels = [
@@ -67,9 +67,10 @@ function ClearGrassAirMonitor(log, config) {
             .on('get', this.getAirQuality.bind(this));
 	    
 
-    this.service
-        .getCharacteristic(Characteristic.StatusActive)
-        .on('get', this.getStatusActive.bind(this));
+    this.statusActiveCharacteristic = this.service.addCharacteristic(Characteristic.StatusActive);
+        this.service
+            .getCharacteristic(Characteristic.StatusActive)
+            .on('get', this.getStatusActive.bind(this));
 
 	this.pm2_5Characteristic = this.service.addCharacteristic(Characteristic.PM2_5Density);
         this.service
@@ -79,7 +80,11 @@ function ClearGrassAirMonitor(log, config) {
 
 	this.tvocCharacteristic = this.service.addCharacteristic(Characteristic.VOCDensity);
         this.service
-            .getCharacteristic(Characteristic.VOCDensity)
+            .getCharacteristic(Characteristic.VOCDensity).setProps({
+                maxValue: 9999,
+                minValue: 0,
+                unit: "ppm"
+                })
             .on('get', this.getTvoc.bind(this));
 
 
@@ -92,6 +97,28 @@ function ClearGrassAirMonitor(log, config) {
 
     this.services.push(this.service);
     this.services.push(this.serviceInfo);
+
+    if (this.showPm2_5) {
+        this.pm2_5SensorService = new Service.Pm2_5Sensor(this.namePm2_5);
+
+        this.pm2_5Characteristic = this.service.addCharacteristic(Characteristic.CurrentPm2_5);
+        this.pm2_5SensorService
+            .getCharacteristic(Characteristic.CurrentPm2_5)
+            .on('get', this.getPM25.bind(this));
+
+        this.services.push(this.pm2_5SensorService);
+    }
+
+    if (this.showTvoc) {
+        this.tvocSensorService = new Service.TvocSensor(this.nameTvoc);
+
+        this.tvocCharacteristic = this.service.addCharacteristic(Characteristic.CurrentTvoc);
+        this.tvocSensorService
+            .getCharacteristic(Characteristic.CurrentTvoc)
+            .on('get', this.getTvoc.bind(this));
+
+        this.services.push(this.tvocSensorService);
+    }
 
     if (this.showTemperature) {
         this.temperatureSensorService = new Service.TemperatureSensor(this.nameTemperature);
@@ -128,8 +155,6 @@ function ClearGrassAirMonitor(log, config) {
             .on('get', this.getCo2Level.bind(this));
 
         this.services.push(this.carbonDioxideService);
-
-
     }
 
     this.discover();
@@ -283,8 +308,8 @@ ClearGrassAirMonitor.prototype = {
         this.log.debug('getPM25: %s', this.pm25);
 
         callback(null, this.pm25);
-    }
-    ,getTvoc: function(callback) {
+    },
+    getTvoc: function(callback) {
         if (!this.device) {
             callback(new Error('No AirQuality Sensor is discovered.'));
             return;
@@ -310,7 +335,6 @@ ClearGrassAirMonitor.prototype = {
 	   }
     },
 
-
     getCo2Level:  function(callback) {
         if (!this.device) {
             callback(new Error('No AirQuality Sensor is discovered.'));
@@ -321,7 +345,6 @@ ClearGrassAirMonitor.prototype = {
         callback(null, this.co2);
     },
 
-
     getCo2PeakLevel:  function(callback) {
         if (!this.device) {
             callback(new Error('No AirQuality Sensor is discovered.'));
@@ -331,7 +354,6 @@ ClearGrassAirMonitor.prototype = {
         this.log.debug('getCo2: %s', this.co2);
         callback(null, this.co2);
     },
-
 
 
     getTemperature: function(callback) {
@@ -364,6 +386,3 @@ ClearGrassAirMonitor.prototype = {
         return this.services;
     }
 };
-
-
-

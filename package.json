@@ -1,31 +1,35 @@
 {
-	"name": "homebridge-cgllc-airmonitor-s1",
-	"version": "0.0.13",
-	"description": "Xiaomi Clear Grass(S1) plugin for Homebridge.",
-	"author": "Steve Kim <smallwood69@gmail.com>",
-	"license": "MIT",
-	"main": "index.js",
-	"keywords": [
-		"homebridge-plugin",
-		"xiaomi",
-		"Clear Grass ",
-		"air monitor",
-		"cleargrass",
-		"air detector"
-	],
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/smallwood69/homebridge-cgllc-airmonitor-s1"
-	},
+  "name": "homebridge-cgllc-airmonitor-s1-14",
+  "version": "0.0.14",
+  "description": "Xiaomi Clear Grass(S1) plugin for Homebridge.",
+  "author": "Steve Kim <smallwood69@gmail.com>",
+  "license": "MIT",
+  "main": "index.js",
+  "keywords": [
+    "homebridge-plugin",
+    "xiaomi",
+    "Clear Grass ",
+    "air monitor",
+    "cleargrass",
+    "air detector"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/smallwood69/homebridge-cgllc-airmonitor-s1.git"
+  },
   "bugs": {
     "url": "https://github.com/smallwood69/homebridge-cgllc-airmonitor-s1/issues"
   },
-	"engines": {
-		"node": ">=0.12.0",
-		"homebridge": ">=0.4.0",
-		"miio": ">=0.15.6"
-	},
-	"dependencies": {
-		"miio": "^0.15.6"
-	}
+  "engines": {
+    "node": ">=0.12.0",
+    "homebridge": ">=0.4.0",
+    "miio": ">=0.15.6"
+  },
+  "dependencies": {
+    "miio": "^0.15.6"
+  },
+  "homepage": "https://github.com/smallwood69/homebridge-cgllc-airmonitor-s1#readme",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
 }
